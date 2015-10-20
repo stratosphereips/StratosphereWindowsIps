@@ -10,6 +10,7 @@ import socket
 import os
 import traceback
 
+# stupid coment
 
 logging.basicConfig(
     filename = 'c:\\Windows\\Temp\\hello-service.log',

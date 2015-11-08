@@ -9,18 +9,28 @@ import logging
 import socket
 import os
 import traceback
+import subprocess
 
-# stupid coment2
+
+
+def launchWithoutConsole(command, args):
+   """Launches 'command' windowless"""
+   startupinfo = subprocess.STARTUPINFO()
+   startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+   return subprocess.Popen([command] + args, startupinfo=startupinfo,
+                    stderr=subprocess.PIPE, stdout=subprocess.PIPE)
 
 logging.basicConfig(
-    filename = 'c:\\Windows\\Temp\\hello-service.log',
+    filename = 'c:\\Windows\\Temp\\hello-service2.log',
     level = logging.DEBUG,
-    format = '[helloworld-service] %(levelname)-7.7s %(message)s'
+    format = '[helloworld-service2] %(levelname)-7.7s %(message)s'
 )
 
 class AppServerSvc(win32serviceutil.ServiceFramework):
-    _svc_name_ = "MyService"
-    _svc_display_name_ = "Test Service"
+    _svc_name_ = "MyService1"
+    _svc_display_name_ = "Test Service1"
+    #_svc_description_ = "This service writes stuff to a file"
 
     def __init__(self, args):
         win32serviceutil.ServiceFramework.__init__(self, args)
@@ -34,42 +44,45 @@ class AppServerSvc(win32serviceutil.ServiceFramework):
     def SvcDoRun(self):
         logging.info('Running ...')
 
-        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
-                              servicemanager.PYS_SERVICE_STARTED,
-                              (self._svc_name_, ''))
-        self.run = True
-        try:  # try main
+        #self.run = True
+        try:
             self.new_function()
         except:
             servicemanager.LogErrorMsg(traceback.format_exc())  # if error print it to event log
             os._exit(-1)  # return some value other than 0 to os so that service knows to restart
 
+
     def new_function(self):
         logging.info('Testing my function')
-        #f = open('test.dat', 'w+')
-        #f = open('c:\\Temp\\test.dat', 'w+')
-        #f.write('jujujuefsdfsdfjoij\n')
-        #f.flush()
+
+        #os.system("C:\\Windows\\Temp\\notepad++.lnk")
+        #os.system('"C:/Windows/System32/notepad.exe"')
+        #os.system('"C:/Windows/System32/notepad.exe"')
+        #subprocess.call(["C:\\Windows\\System32\\notepad.exe"])
+
+        process = launchWithoutConsole("c:\\Windows\\System32\\notepad.exe", ["-ahojJardo"])
+        stderr, stdout = process.communicate()
+
+
+        f = open('c:\\Windows\\Temp\\test_frenky.dat', 'w+')
+        f.write('ahoj prde\n')
+        f.write('jak se mas\n')
+        f.write('mam se dobre...\n')
+        f.flush()
+        f.close()
 
         rc = None
-
-        freq = 2500
-        length = 1000
-        winsound.Beep(freq, length)
-
-
         while rc != win32event.WAIT_OBJECT_0:
-
-            winsound.Beep(freq, length)
             rc = win32event.WaitForSingleObject(self.hWaitStop, 3000)
-        #f.write('SHUTTING DOWN\n')
-        #f.close()
+
 
 
 if __name__ == '__main__':
     winsound.Beep(2500, 500)
     logging.info('Starting service ...')
     win32serviceutil.HandleCommandLine(AppServerSvc)
+
+
 
 ("\"\n"
  "class PySvc(win32serviceutil.ServiceFramework):\n"

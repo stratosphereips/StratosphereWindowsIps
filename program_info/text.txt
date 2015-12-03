@@ -1,0 +1,4 @@
+@echo off
+echo Let me say: heeah
+python C:\Users\Frenky\Documents\Skola\Stratosphere\windowsService\StratosphereBackground.py %*
+pause

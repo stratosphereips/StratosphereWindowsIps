@@ -21,11 +21,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="StratosphereWatcher.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="StratosphereWatcher.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/StratosphereWatcher.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.6666667">
+              <caret line="113" column="94" selection-start-line="113" selection-start-column="94" selection-end-line="113" selection-end-column="94" />
               <folding>
                 <element signature="e#23#32#0" expanded="true" />
               </folding>
@@ -43,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StratosphereFLow.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="StratosphereFLow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/StratosphereFLow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.43137255">
-              <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
               <folding>
                 <element signature="e#27#39#0" expanded="true" />
               </folding>
@@ -840,16 +840,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/StratosphereWatcher.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="109" column="0" selection-start-line="109" selection-start-column="0" selection-end-line="110" selection-end-column="0" />
-          <folding>
-            <element signature="e#23#32#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/example-flows.binetflow">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -868,10 +858,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/StratosphereFLow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.43137255">
-          <caret line="35" column="29" selection-start-line="35" selection-start-column="29" selection-end-line="35" selection-end-column="29" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
           <folding>
             <element signature="e#27#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/StratosphereWatcher.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6666667">
+          <caret line="113" column="94" selection-start-line="113" selection-start-column="94" selection-end-line="113" selection-end-column="94" />
+          <folding>
+            <element signature="e#23#32#0" expanded="true" />
           </folding>
         </state>
       </provider>

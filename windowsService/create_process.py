@@ -66,3 +66,4 @@ AdjustPriv(win32security.SE_INCREASE_QUOTA_NAME)
 hUser = attempt_to_logon()
 print_info(hUser)
 run_as_user(hUser)
+

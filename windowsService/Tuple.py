@@ -2,6 +2,10 @@ __author__ = 'Frenky'
 
 import datetime
 
+#
+# Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
+#
+
 
 class Tuple:
 
@@ -42,7 +46,7 @@ class Tuple:
             T2 = (self.time_1 - self.time_2).total_seconds()
 
             # print 'T1:', T1
-            # print 'T2', T2
+            # print 'T2:', T2
 
             if T1 > T2:
                 TD = T1/T2
@@ -109,25 +113,25 @@ class Tuple:
 
         # Add result to state
         self.state += result
-        print 'STAV:', self.state
+        # print 'STAV:', self.state
 
         # switch time
         self.time_3 = self.time_2
         self.time_2 = self.time_1
 
 
-if __name__ == "__main__":
-
-    tup = Tuple('tuple')
-
-    flow = '2015/12/10 10:34:58.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-    tup.add_flow(flow)
-    flow = '2015/12/10 10:35:00.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-    tup.add_flow(flow)
-    flow = '2015/12/10 10:35:02.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-    tup.add_flow(flow)
-    flow = '2015/12/10 10:35:20.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-    tup.add_flow(flow)
+# if __name__ == "__main__":
+#
+#     tup = Tuple('tuple')
+#
+#     flow = '2015/12/10 10:34:58.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
+#     tup.add_flow(flow)
+#     flow = '2015/12/10 10:35:00.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
+#     tup.add_flow(flow)
+#     flow = '2015/12/10 10:35:02.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
+#     tup.add_flow(flow)
+#     flow = '2015/12/10 10:35:20.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
+#     tup.add_flow(flow)
 
 
 

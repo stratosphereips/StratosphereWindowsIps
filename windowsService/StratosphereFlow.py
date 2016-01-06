@@ -1,24 +1,28 @@
 __author__ = 'Frenky'
 import Queue
 import StratosphereDetector
+import Tuple
 import sys, time
 from threading import Thread
 
 flow_queue = Queue.Queue()
-
 
 # Thread - getting flow from quene and calling functin from Stratospehre Detector
 class ThreadQuene(Thread):
 
     def __init__(self):
         Thread.__init__(self)
+        self.dictionary = dict()
 
     def run(self):
         while True:
             flow = flow_queue.get()
-            print 'Getting flow from quene...'
-            StratosphereDetector.analyze_flow(flow)
-            # time.sleep(1)
+            split = flow.split(',')
+            # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
+            tuple_index = split[3], split[6], split[7], split[2]
+            if tuple_index not in self.dictionary.keys():
+                self.dictionary[tuple_index] = Tuple.Tuple([split[3], split[6], split[7], split[2]])
+                self.dictionary[tuple_index].add_flow(flow)
 
 if __name__ == "__main__":
 
@@ -27,6 +31,16 @@ if __name__ == "__main__":
 
     # Reading Flows from STDIN
     for line in sys.stdin:
-        print 'Flow', line
+        # print 'Flow', line
         flow_queue.put(line)
-        # time.sleep(1)
+
+    # Wait for end of analyze
+    time.sleep(2)
+
+    # Print Dictionary
+    f = open('TupleFile', 'w')
+    for i in t2.dictionary:
+        # print i, t2.dictionary[i].state
+        print 'tuple: ', t2.dictionary[i].state
+        f.write('tuple: %s\n' % t2.dictionary[i].state)
+    f.close()

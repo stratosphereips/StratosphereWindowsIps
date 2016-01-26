@@ -41,7 +41,7 @@ import urllib2
 
 
 def download_upadte(url):
-    print 'Downloading updates.'
+    print('Downloading updates.')
     # url = "https://raw.githubusercontent.com/stratosphereips/StratosphereIps/Frenky/windowsService/configfile_check.py"
 
     file_name = url.split('/')[-1]
@@ -49,7 +49,7 @@ def download_upadte(url):
     f = open(file_name, 'wb')
     meta = u.info()
     file_size = int(meta.getheaders("Content-Length")[0])
-    print "Downloading: %s Bytes: %s" % (file_name, file_size)
+    print ("Downloading: %s Bytes: %s" % (file_name, file_size))
 
     file_size_dl = 0
     block_sz = 8192
@@ -61,13 +61,13 @@ def download_upadte(url):
         f.write(buffer)
         status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
         status = status + chr(8) * (len(status) + 1)
-        print status,
+        print (status,)
 
     f.close()
 
 
 def set_config(days_update_again):
-    print 'Setting Config file.'
+    print ('Setting Config file.')
     next_update = datetime.date.today() + datetime.timedelta(days_update_again)
 
     file_name = 'configfile.cfg'
@@ -94,15 +94,15 @@ def check_config():
         # Podivej se na tohle more,... nedava to smysl....
         if date_upadte < date_now:
             if is_forbidden is False:
-                print 'Downloading new update.'
+                print ("Downloading new update.")
                 download_upadte(url_string) #  (pak je treba dat do funkce download exception pro pripad, ze nejsi propojenej k netu)
-                print 'Set config file'
+                print ('Set config file')
                 set_config(days_update_again)
             else:
-                print "Updating is forbidden!"
+                print ("Updating is forbidden!")
     except:
-        print 'There is no config file or config file is not valid.'
-        print 'Creating new config file.'
+        print ("There is no config file or config file is not valid.")
+        print ('Creating new config file.')
 
         # FIRST SECTION
         config.add_section('STRATOSPHERE_WINDOW')

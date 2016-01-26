@@ -1,7 +1,7 @@
 __author__ = 'Frenky'
 import Queue
 import StratosphereDetector
-import Tuple
+import StratosphereTuple
 import sys
 import time
 import datetime
@@ -30,14 +30,14 @@ class ThreadQuene(Thread):
                 if tuple_index in self.tuples_dict.keys():
                     self.tuples_dict[tuple_index].add_flow(flow)
                 else:
-                    self.tuples_dict[tuple_index] = Tuple.Tuple([split[3], split[6], split[7], split[2]])
+                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]])
                     self.tuples_dict[tuple_index].add_flow(flow)
 
                 # EVERY 5 SECONDS CHECK THE TUPLES
                 # now = datetime.datetime.now()
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > 300:
+                    if (now - self.last_flow_time).seconds > 120:
                         # put the tuple label in to the ips dictionary according to ap
                         for i in self.tuples_dict:
                             # get label: netbot, normal, spam ...
@@ -62,17 +62,17 @@ class ThreadQuene(Thread):
             spam = 0
             for j in range(len(split)-1):
                 # print 'split:', split[j]
-                if split[j] == 'NORMAL':
+                if split[j] == 'Normal':
                     normal += 1
                 else:
                     spam += 1
             # print 'normal:', normal
             # print 'spam:', spam
-            # if normal > spam:
-            #     print 'IP: ' + i + ' : ' + 'Everything is ok.'
-            # elif normal <= spam:
-            #     print 'IP: ' + i + ' : ' + 'NETBOT is recognized!'
-        print '---------------------'
+            if normal > spam:
+                print 'IP: ' + i + ' : ' + 'Everything is ok.'
+            elif normal <= spam:
+                print 'IP: ' + i + ' : ' + 'Something is recognized!'
+        print ('-- Checking')
 
 
 if __name__ == "__main__":
@@ -86,11 +86,15 @@ if __name__ == "__main__":
         flow_queue.put(line)
 
     # Wait for end of analyze
-    time.sleep(2)
+    while flow_queue.empty() is False:
+        time.sleep(3)
 
     # Print Dictionary
     f = open('TupleFile', 'w')
     for i in t2.tuples_dict:
-        print ('[%s]: %s' % (', '.join(map(str, i)), t2.tuples_dict[i].state))
+        print('- [%s]: %s' % (', '.join(map(str, i)), t2.tuples_dict[i].state))
         f.write('[%s]:     %s\n' % (t2.tuples_dict[i].state, ', '.join(map(str, i))))
     f.close()
+    print 'Results:'
+    for i in t2.ips_dict:
+        print 'state: ', t2.ips_dict[i]

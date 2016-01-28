@@ -5,11 +5,11 @@ import datetime
 import urllib2
 import StratosphereConfig
 import StratosphereOutput
+import zipfile
 
 
-def download_upadte(url):
+def download_file(url):
     StratosphereOutput.show('Downloading updates.', 2)
-    # url = "https://raw.githubusercontent.com/stratosphereips/StratosphereIps/Frenky/windowsService/configfile_check.py"
 
     file_name = url.split('/')[-1]
     u = urllib2.urlopen(url)
@@ -29,23 +29,38 @@ def download_upadte(url):
         status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
         status = status + chr(8) * (len(status) + 1)
         StratosphereOutput.show(status, 2)
-
     f.close()
 
+
+def unzips(name):
+    StratosphereOutput.show('Unziping file.', 3)
+    fh = open(name + '.zip', 'rb')
+    z = zipfile.ZipFile(fh)
+    for i in z.namelist():
+        z.extract(i, "./"+ name)
+    fh.close()
+
+def download_manager():
+    StratosphereOutput.show("Downloading new update.", 1)
+    # Download classes StratosphereFlow, StratosphereWindow..
+    download_file(StratosphereConfig.url_to_classes)
+    # Download Models
+    download_file(StratosphereConfig.url_to_models)
+    unzips('models')
+    # Download Modules
+    download_file(StratosphereConfig.url_to_modules)
+    unzips('modules')
 
 def check_if_upadte():
     date_upadte = datetime.datetime.strptime(StratosphereConfig.date_string, '%Y-%m-%d')
     date_now = datetime.datetime.now()
-    print date_upadte
-    print date_now
     if date_upadte < date_now:
         if StratosphereConfig.is_forbidden is False:
-            StratosphereOutput.show("Downloading new update.", 1)
-            # download_upadte(ConfigFile.url_string) #  (pak je treba dat do funkce download exception pro pripad, ze nejsi propojenej k netu)
+            download_manager()
             StratosphereOutput.show('Set config file.', 1)
             StratosphereConfig.set_config()
         else:
-            print ("Updating is forbidden!", 1)
+            StratosphereOutput.show("Updating is forbidden!", 1)
 
 
 if __name__ == "__main__":
@@ -58,8 +73,7 @@ if __name__ == "__main__":
     path = 'C:\Users\Frenky\Documents\Skola\Stratosphere\StratosphereWindowsIPS'
     # Create process.
     # p = subprocess.Popen('python ' + path, shell=True)
-    print 'cat' +path+ '\test8.binetflow | python ' + path + '\StratosphereFlow.py'
-    p = subprocess.Popen('cat ' +path+ '\\example-flows.binetflow | python ' + path + '\\StratosphereFlow.py', shell=True)
+    p = subprocess.Popen('cat ' +path+ '\\test3.binetflow | python ' + path + '\\StratosphereFlow.py', shell=True)
     # Wait until process terminates.
     while True:
         if p.poll() is None:

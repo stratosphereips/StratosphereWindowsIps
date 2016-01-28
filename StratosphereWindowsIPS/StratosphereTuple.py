@@ -1,7 +1,7 @@
 __author__ = 'Frenky'
 
 import datetime
-
+import StratosphereConfig
 #
 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
 #
@@ -29,7 +29,7 @@ class Tuple:
         self.compute_state(flow)
 
     def check_size(self):
-        if len(self.state) > 100:
+        if len(self.state) > StratosphereConfig.length_of_state:
             self.state = ''
             self.list = []
 
@@ -75,7 +75,7 @@ class Tuple:
             row = 4
         # print 'ROW:',row
         if self.time_2 is not None:
-              # Symbols (0 , . + *)
+            # Symbols (0 , . + *)
             if (T2 > 0) and (T2 <= 5):
                 symbol = '.'
             elif (T2 > 5) and (T2 <= 60):
@@ -92,7 +92,6 @@ class Tuple:
                 for i in range(temp):
                     symbol += '0'
 
-
         # size and duration of flow
         if size <= 250:
             if duration <= 0.1:
@@ -106,14 +105,14 @@ class Tuple:
                 column = 3
              elif (duration > 0.1) and (duration <= 10):
                 column = 4
-             elif(duration >10):
+             elif duration > 10:
                 column = 5
         elif size > 1100:
              if duration <= 0.1:
                 column = 6
              elif (duration > 0.1) and (duration <= 10):
                 column = 7
-             elif(duration >10):
+             elif duration > 10:
                 column = 8
         # print 'COLUMN', column
 

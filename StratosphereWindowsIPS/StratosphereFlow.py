@@ -1,4 +1,3 @@
-__author__ = 'Frenky'
 import Queue
 import StratosphereDetector
 import StratosphereTuple
@@ -6,6 +5,9 @@ import sys
 import time
 import datetime
 from threading import Thread
+import StratosphereConfig
+import StratosphereOutput
+__author__ = 'Frenky'
 
 flow_queue = Queue.Queue()
 
@@ -20,7 +22,9 @@ class ThreadQuene(Thread):
         self.last_flow_time = None
 
     def run(self):
-        # READING FROM QUEUE
+        self.read_from_queue()
+
+    def read_from_queue(self):
         while True:
             if flow_queue.empty() is False:
                 flow = flow_queue.get()
@@ -37,7 +41,7 @@ class ThreadQuene(Thread):
                 # now = datetime.datetime.now()
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > 120:
+                    if (now - self.last_flow_time).seconds > StratosphereConfig.time_for_check_flows:
                         # put the tuple label in to the ips dictionary according to ap
                         for i in self.tuples_dict:
                             # get label: netbot, normal, spam ...
@@ -69,10 +73,10 @@ class ThreadQuene(Thread):
             # print 'normal:', normal
             # print 'spam:', spam
             if normal > spam:
-                print 'IP: ' + i + ' : ' + 'Everything is ok.'
+                StratosphereOutput.show('IP: ' + i + ' : ' + 'Everything is ok.', 3)
             elif normal <= spam:
-                print 'IP: ' + i + ' : ' + 'Something is recognized!'
-        print ('-- Checking')
+                StratosphereOutput.show(('IP: ' + i + ' : ' + 'Something is recognized!'), 3)
+        StratosphereOutput.show('Checking...', 3)
 
 
 if __name__ == "__main__":
@@ -92,9 +96,10 @@ if __name__ == "__main__":
     # Print Dictionary
     f = open('TupleFile', 'w')
     for i in t2.tuples_dict:
-        print('- [%s]: %s' % (', '.join(map(str, i)), t2.tuples_dict[i].state))
+        StratosphereOutput.show(('- [%s]: %s' % (', '.join(map(str, i)), t2.tuples_dict[i].state)), 3)
         f.write('[%s]:     %s\n' % (t2.tuples_dict[i].state, ', '.join(map(str, i))))
     f.close()
-    print 'Results:'
+
+    StratosphereOutput.show('Results:', 3)
     for i in t2.ips_dict:
-        print 'state: ', t2.ips_dict[i]
+        StratosphereOutput.show(('state: ', t2.ips_dict[i]), 3)

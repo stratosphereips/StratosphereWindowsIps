@@ -101,5 +101,6 @@ if __name__ == "__main__":
     f.close()
 
     StratosphereOutput.show('Results:', 3)
+    print len(t2.ips_dict)
     for i in t2.ips_dict:
         StratosphereOutput.show(('state: ', t2.ips_dict[i]), 3)

@@ -45,7 +45,7 @@ class Tuple:
 
         # Computing of periodicity
         symbol = ''
-        isZero = False
+        # isZero = False
 
         if self.time_2 is not None:
             T2 = (self.time_1 - self.time_2).total_seconds()
@@ -83,10 +83,10 @@ class Tuple:
             elif (T2 > 60) and (T2 <= 300):
                 symbol = '+'
             elif (T2 > 300) and (T2 <= 3600):
-                isZero = True
-                symbol = '0'
+                # isZero = True
+                symbol = '*'
             elif T2 > 3600:
-                isZero = True
+                # isZero = True
                 temp = int(T2 / 3600)
                 symbol = ''
                 for i in range(temp):
@@ -116,10 +116,10 @@ class Tuple:
                 column = 8
         # print 'COLUMN', column
 
-        if isZero is False:
-            result = self.letter_table[row][column] + symbol
-        else:
-            result = symbol + self.letter_table[row][column]
+        # if isZero is False:
+        result = self.letter_table[row][column] + symbol
+        # else:
+        #     result = symbol + self.letter_table[row][column]
 
         # Add result to state
         self.state += result

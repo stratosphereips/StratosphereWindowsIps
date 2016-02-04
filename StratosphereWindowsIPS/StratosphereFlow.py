@@ -1,13 +1,15 @@
 import Queue
-import StratosphereDetector
-import StratosphereTuple
 import sys
 import time
 import datetime
 from threading import Thread
-import StratosphereConfig
+from StratosphereConfig import StratosphereConfig
+StratosphereConfig()    # for create instance
+import StratosphereDetector
+import StratosphereTuple
 import StratosphereOutput
-__author__ = 'Frenky'
+
+config_instance = None
 
 flow_queue = Queue.Queue()
 
@@ -41,7 +43,7 @@ class ThreadQuene(Thread):
                 # now = datetime.datetime.now()
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > StratosphereConfig.time_for_check_flows:
+                    if (now - self.last_flow_time).seconds > config_instance.time_for_check_flows:
                         # put the tuple label in to the ips dictionary according to ap
                         for i in self.tuples_dict:
                             # get label: netbot, normal, spam ...
@@ -79,7 +81,16 @@ class ThreadQuene(Thread):
         StratosphereOutput.show('Checking...', 3)
 
 
+def set_config_instance():
+    # StratosphereConfig()
+    global config_instance
+    config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
+    config_instance.check_config()
+
+
 if __name__ == "__main__":
+
+    set_config_instance()
 
     t2 = ThreadQuene()
     t2.start()

@@ -1,9 +1,7 @@
 __author__ = 'Frenky'
-import StratosphereConfig
+config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
 
-# verbose_option = ConfigFile.verbose_option
-verbose_option = StratosphereConfig.verbose_option
 
 def show(text1, option):
-    if option <= verbose_option:
+    if option <= config_instance.verbose_option:
         print text1

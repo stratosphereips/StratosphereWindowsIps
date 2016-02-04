@@ -3,9 +3,11 @@ import subprocess
 import time
 import datetime
 import urllib2
-import StratosphereConfig
-import StratosphereOutput
 import zipfile
+from StratosphereConfig import StratosphereConfig
+StratosphereConfig()    # for create instance
+import StratosphereOutput
+config_instance = None
 
 
 def download_file(url):
@@ -37,48 +39,58 @@ def unzips(name):
     fh = open(name + '.zip', 'rb')
     z = zipfile.ZipFile(fh)
     for i in z.namelist():
-        z.extract(i, "./"+ name)
+        z.extract(i, "./" + name)
     fh.close()
+
 
 def download_manager():
     StratosphereOutput.show("Downloading new update.", 1)
     # Download classes StratosphereFlow, StratosphereWindow..
-    download_file(StratosphereConfig.url_to_classes)
+    download_file(config_instance.url_to_classes)
     # Download Models
-    download_file(StratosphereConfig.url_to_models)
+    download_file(config_instance.url_to_models)
     unzips('models')
     # Download Modules
-    download_file(StratosphereConfig.url_to_modules)
+    download_file(config_instance.url_to_modules)
     unzips('modules')
 
+
 def check_if_upadte():
-    date_upadte = datetime.datetime.strptime(StratosphereConfig.date_string, '%Y-%m-%d')
+    date_update = datetime.datetime.strptime(config_instance.date_string, '%Y-%m-%d')
     date_now = datetime.datetime.now()
-    if date_upadte < date_now:
-        if StratosphereConfig.is_forbidden is False:
+    if date_update < date_now:
+        if config_instance.is_forbidden is False:
             download_manager()
             StratosphereOutput.show('Set config file.', 1)
-            StratosphereConfig.set_config()
+            config_instance.set_config()
         else:
             StratosphereOutput.show("Updating is forbidden!", 1)
 
 
+def set_config_instance():
+    # StratosphereConfig()
+    global config_instance
+    config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
+    config_instance.check_config()
+
 if __name__ == "__main__":
     # Loading or creating config file.
-    StratosphereConfig.check_config()
+    set_config_instance()
+
     # checking if
     check_if_upadte()
+
     # Path to Stratospehere Window
-    # path = 'C:\Users\Frenky\Documents\Skola\Stratosphere\StratosphereWindowsIPS\StratosphereWindow.py'
     path = 'C:\Users\Frenky\Documents\Skola\Stratosphere\StratosphereWindowsIPS'
+
     # Create process.
-    # p = subprocess.Popen('python ' + path, shell=True)
     p = subprocess.Popen('cat ' +path+ '\\test3.binetflow | python ' + path + '\\StratosphereFlow.py', shell=True)
+
     # Wait until process terminates.
     while True:
         if p.poll() is None:
             StratosphereOutput.show("Process is still runnning...", 3)
-            time.sleep(StratosphereConfig.check_if_process_work)
+            time.sleep(config_instance.check_if_process_work)
         else:
             p = subprocess.Popen('python ' + path, shell=True)
     StratosphereOutput.show(("Process ended, ret code:", p.returncode), 2)

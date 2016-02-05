@@ -5,7 +5,6 @@ import datetime
 import urllib2
 import zipfile
 from StratosphereConfig import StratosphereConfig
-StratosphereConfig()    # for create instance
 import StratosphereOutput
 config_instance = None
 
@@ -68,10 +67,13 @@ def check_if_upadte():
 
 
 def set_config_instance():
-    # StratosphereConfig()
+    StratosphereConfig()
     global config_instance
     config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
     config_instance.check_config()
+
+    # import config instance in 'StratosphereOutput'
+    StratosphereOutput.import_instance()
 
 if __name__ == "__main__":
     # Loading or creating config file.

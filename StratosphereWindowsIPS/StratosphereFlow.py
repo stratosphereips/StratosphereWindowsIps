@@ -4,7 +4,6 @@ import time
 import datetime
 from threading import Thread
 from StratosphereConfig import StratosphereConfig
-StratosphereConfig()    # for create instance
 import StratosphereDetector
 import StratosphereTuple
 import StratosphereOutput
@@ -40,10 +39,9 @@ class ThreadQuene(Thread):
                     self.tuples_dict[tuple_index].add_flow(flow)
 
                 # EVERY 5 SECONDS CHECK THE TUPLES
-                # now = datetime.datetime.now()
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > config_instance.time_for_check_flows:
+                    if (now - self.last_flow_time).seconds > config_instance.time_windows_length:
                         # put the tuple label in to the ips dictionary according to ap
                         for i in self.tuples_dict:
                             # get label: netbot, normal, spam ...
@@ -56,12 +54,14 @@ class ThreadQuene(Thread):
 
                         # check if we recognize malicious
                         self.check_malicious()
+                        # check lengths of tuple state
+                        self.check_tuple_size()
+                        # set new time
                         self.last_flow_time = now
                 else:
                     self.last_flow_time = now
 
     def check_malicious(self):
-        # print 'checking.....'
         for i in self.ips_dict:
             split = self.ips_dict[i].split('-')
             normal = 0
@@ -80,16 +80,26 @@ class ThreadQuene(Thread):
                 StratosphereOutput.show(('IP: ' + i + ' : ' + 'Something is recognized!'), 3)
         StratosphereOutput.show('Checking...', 3)
 
+    def check_tuple_size(self):
+        for i in self.tuples_dict:
+            if len(self.tuples_dict[i].state) > config_instance.time_windows_length:
+                self.tuples_dict[i].state = ''
+                self.tuples_dict[i].list = []
+
 
 def set_config_instance():
-    # StratosphereConfig()
+    StratosphereConfig()
     global config_instance
     config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
     config_instance.check_config()
 
+    # import config instance in 'StratosphereOutput'
+    StratosphereOutput.import_instance()
+
 
 if __name__ == "__main__":
 
+    # import the config instance to the "config_instance".
     set_config_instance()
 
     t2 = ThreadQuene()

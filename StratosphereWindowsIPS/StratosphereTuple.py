@@ -1,7 +1,7 @@
 __author__ = 'Frenky'
 
 import datetime
-config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
+# config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
 #
 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
 #
@@ -24,14 +24,13 @@ class Tuple:
         self.list = []
 
     def add_flow(self, flow):
-        self.check_size()
         self.list.append(flow)
         self.compute_state(flow)
 
-    def check_size(self):
-        if len(self.state) > config_instance.length_of_state:
-            self.state = ''
-            self.list = []
+    # def check_size(self):
+    #     if len(self.state) > config_instance.length_of_state:
+    #         self.state = ''
+    #         self.list = []
 
     def compute_state(self, flow):
         # Devide the Flow

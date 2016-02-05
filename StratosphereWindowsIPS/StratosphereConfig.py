@@ -27,7 +27,7 @@ class StratosphereConfig:
             self.url_to_modules = 'http://mcfp.felk.cvut.cz/stratosphere/stratospherewindowsips/modules/modules.zip'
             self.url_to_models = 'http://mcfp.felk.cvut.cz/stratosphere/stratospherewindowsips/models/models.zip'
             self.length_of_state = 100
-            self.time_for_check_flows = 300
+            self.time_windows_length = 300
             # STRATOSPHERE_WATCHER
             self.run_on_start = True
             # STRATOSPHERE OUTPUT
@@ -46,7 +46,7 @@ class StratosphereConfig:
                 self.url_to_classes = config.get('STRATOSPHERE_WINDOW', 'UPDATE_URL_CLASSES')
                 self.check_if_process_work = config.getint('STRATOSPHERE_WINDOW', 'CHECK_IF_UP_EVERY')
                 self.length_of_state = config.getint('STRATOSPHERE_WINDOW', 'LENGTH_OF_STATE')
-                self.time_for_check_flows = config.getint('STRATOSPHERE_WINDOW', 'TIME_FOR_CHECK_FLOWS')
+                self.time_windows_length = config.getint('STRATOSPHERE_WINDOW', 'TIME_WINDOWS_LENGTH')
                 self.verbose_option = config.getint('STRATOSPHERE_OUTPUT', 'VERBOSE_OPTION')
                 self.url_to_modules = config.get('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODULES')
                 self.url_to_models = config.get('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODELS')
@@ -61,7 +61,7 @@ class StratosphereConfig:
                 config.set('STRATOSPHERE_WINDOW', 'CHECK_IF_UP_EVERY', self.check_if_process_work)
                 config.set('STRATOSPHERE_WINDOW', 'UPDATE_URL_CLASSES', self.url_to_classes)
                 config.set('STRATOSPHERE_WINDOW', 'LENGTH_OF_STATE', self.length_of_state)
-                config.set('STRATOSPHERE_WINDOW', 'TIME_FOR_CHECK_FLOWS', self.time_for_check_flows)
+                config.set('STRATOSPHERE_WINDOW', 'TIME_WINDOWS_LENGTH', self.time_windows_length)
                 config.set('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODULES', self.url_to_modules)
                 config.set('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODELS', self.url_to_models)
                 # SECOND SECTION
@@ -74,6 +74,7 @@ class StratosphereConfig:
                 with open(file_name, 'wb') as configfile:
                     config.write(configfile)
 
+        # Set new date for uodate (default is today + 3 days)
         def set_config(self):
             # StratosphereOutput.show('Setting Config file.', 2)
             next_update = datetime.date.today() + datetime.timedelta(self.days_update_again)
@@ -84,8 +85,6 @@ class StratosphereConfig:
             config.set('STRATOSPHERE_WINDOW', 'DATE_OF_NEXT_UPDATE', next_update)
             with open(file_name, 'wb') as configfile:
                 config.write(configfile)
-
-
 
 
 

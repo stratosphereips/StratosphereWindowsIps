@@ -75,6 +75,7 @@ def set_config_instance():
     # import config instance in 'StratosphereOutput'
     StratosphereOutput.import_instance()
 
+
 if __name__ == "__main__":
     # Loading or creating config file.
     set_config_instance()
@@ -84,6 +85,7 @@ if __name__ == "__main__":
 
     # Path to Stratospehere Window
     path = 'C:\Users\Frenky\Documents\Skola\Stratosphere\StratosphereWindowsIPS'
+    path = 'C:\\Users\\frenk\\Documents\\Skola\\Stratosphere\\StratosphereWindowsIPS'
 
     # Create process.
     p = subprocess.Popen('cat ' +path+ '\\test3.binetflow | python ' + path + '\\StratosphereFlow.py', shell=True)

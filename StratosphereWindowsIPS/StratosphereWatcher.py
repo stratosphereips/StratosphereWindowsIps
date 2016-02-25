@@ -6,6 +6,7 @@ import urllib2
 import zipfile
 from StratosphereConfig import StratosphereConfig
 import StratosphereOutput
+
 config_instance = None
 
 
@@ -59,6 +60,7 @@ def check_if_upadte():
     date_now = datetime.datetime.now()
     if date_update < date_now:
         if config_instance.is_forbidden is False:
+            StratosphereOutput.log('Downloading files.')
             download_manager()
             StratosphereOutput.show('Set config file.', 1)
             config_instance.set_config()
@@ -77,14 +79,13 @@ def set_config_instance():
 
 
 if __name__ == "__main__":
-    # Loading or creating config file.
+    # Loading or creating config file and log file.
     set_config_instance()
 
     # checking if
     check_if_upadte()
 
     # Path to Stratospehere Window
-    path = 'C:\Users\Frenky\Documents\Skola\Stratosphere\StratosphereWindowsIPS'
     path = 'C:\\Users\\frenk\\Documents\\Skola\\Stratosphere\\StratosphereWindowsIPS'
 
     # Create process.

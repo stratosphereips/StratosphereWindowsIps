@@ -27,11 +27,6 @@ class Tuple:
         self.list.append(flow)
         self.compute_state(flow)
 
-    # def check_size(self):
-    #     if len(self.state) > config_instance.length_of_state:
-    #         self.state = ''
-    #         self.list = []
-
     def compute_state(self, flow):
         # Devide the Flow
         split = flow.split(',')
@@ -97,7 +92,7 @@ class Tuple:
                 column = 0
             elif (duration > 0.1) and (duration <= 10):
                 column = 1
-            elif(duration >10):
+            elif duration > 10:
                 column = 2
         elif (size > 250) and (size <= 1100):
              if duration <= 0.1:
@@ -113,34 +108,16 @@ class Tuple:
                 column = 7
              elif duration > 10:
                 column = 8
-        # print 'COLUMN', column
 
-        # if isZero is False:
         result = self.letter_table[row][column] + symbol
-        # else:
-        #     result = symbol + self.letter_table[row][column]
 
         # Add result to state
         self.state += result
-        # print 'STAV:', self.state
 
         # switch time
         self.time_3 = self.time_2
         self.time_2 = self.time_1
 
-
-# if __name__ == "__main__":
-#
-#     tup = Tuple('tuple')
-#
-#     flow = '2015/12/10 10:34:58.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-#     tup.add_flow(flow)
-#     flow = '2015/12/10 10:35:00.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-#     tup.add_flow(flow)
-#     flow = '2015/12/10 10:35:02.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-#     tup.add_flow(flow)
-#     flow = '2015/12/10 10:35:20.324494,0.000000,udp,147.32.83.157,57621,   ->,147.32.83.255,57621,REQ,0,,1,86,86,PF'
-#     tup.add_flow(flow)
 
 
 

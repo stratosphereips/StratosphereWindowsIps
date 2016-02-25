@@ -19,7 +19,8 @@ First the program downloads necessary files and then runs. You can also manage t
 TODO:
 -----------
 * add detection modules to the program
-* comments in configuration file
-* add logs
 * add more comments to code
+* add solution for no internet acces
+* add better verbose
+* create install app.
 

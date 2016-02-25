@@ -72,12 +72,13 @@ class ThreadQuene(Thread):
                     normal += 1
                 else:
                     spam += 1
-            # print 'normal:', normal
-            # print 'spam:', spam
+
             if normal > spam:
                 StratosphereOutput.show('IP: ' + i + ' : ' + 'Everything is ok.', 3)
+                StratosphereOutput.log('Nothing was found.')
             elif normal <= spam:
                 StratosphereOutput.show(('IP: ' + i + ' : ' + 'Something is recognized!'), 3)
+                StratosphereOutput.log('Something was recognized.')
         StratosphereOutput.show('Checking...', 3)
 
     def check_tuple_size(self):
@@ -106,9 +107,11 @@ if __name__ == "__main__":
     t2.start()
 
     # Reading Flows from STDIN
+    StratosphereOutput.log('Reading flows from Queue.')
     for line in sys.stdin:
         # print 'Flow', line
         flow_queue.put(line)
+    StratosphereOutput.log('Queue is empty.')
 
     # Wait for end of analyze
     while flow_queue.empty() is False:

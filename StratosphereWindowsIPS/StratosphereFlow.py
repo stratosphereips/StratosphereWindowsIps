@@ -41,8 +41,11 @@ class ThreadQuene(Thread):
                 # The variable "now" is time from this new flow.
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    # print '--------------------------------------------------'
                     if (now - self.last_flow_time).seconds > __StratosphereConfig__.get_int_time_windows_length():
+
+                        StratosphereOutput.show('--Start time_window: ' + str(datetime.datetime.now()), 1)
+                        StratosphereOutput.log('--Start time_window: ' + str(datetime.datetime.now()))
+
                         for i in self.tuples_dict:
 
                             # The Function return labels: "Normal" or "Botnet" or "Attack" or "Malware".
@@ -64,6 +67,10 @@ class ThreadQuene(Thread):
                         self.check_tuple_size()
                         # set new time
                         self.last_flow_time = now
+
+                        StratosphereOutput.show('--End time_window: ' + str(datetime.datetime.now()), 1)
+                        StratosphereOutput.log('--End time_window: ' + str(datetime.datetime.now()))
+
                 else:
                     self.last_flow_time = now
             else:
@@ -97,13 +104,11 @@ class ThreadQuene(Thread):
                 self.tuples_dict[i].state = ''
                 self.tuples_dict[i].list = []
 
+    # resolve the result about malicious or not
     def resolve(self, is_malicious, i, labels, text):
         if is_malicious or __StratosphereConfig__.get_bool_print_all_labels():
-            StratosphereOutput.show(text + i, 2)
-            StratosphereOutput.show(i + ' -> ' + labels, 2)
-
-            StratosphereOutput.log(text + i)
-            StratosphereOutput.log(i + ' -> ' + labels)
+            StratosphereOutput.show(text + i + ' -> ' + labels, 2)
+            StratosphereOutput.log(text + i + ' -> ' + labels)
 
     # This function is temporary just for printing
     # the information about tuples and ips and their labels.

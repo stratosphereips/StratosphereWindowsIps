@@ -38,6 +38,8 @@ class ThreadQuene(Thread):
                     self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
                     self.tuples_dict[tuple_index].add_flow(flow)
 
+
+
                 # The variable "now" is time from this new flow.
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
@@ -52,7 +54,7 @@ class ThreadQuene(Thread):
                             # Right now we are not using the detected variable. Maybe we should in the future.
                             (detected, label, matching_len) = StratosphereDetector.detect(self.tuples_dict[i])
 
-                            # The label is False, when the detector has a little information.
+                            # The label is False, when the detector has a little information
                             if label is not False:
                                 ip = self.tuples_dict[i].tuple[0]
                                 label_state = label
@@ -100,9 +102,11 @@ class ThreadQuene(Thread):
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-            if len(self.tuples_dict[i].state) > __StratosphereConfig__.get_int_time_windows_length():
-                self.tuples_dict[i].state = ''
-                self.tuples_dict[i].list = []
+            # if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
+            if len(self.tuples_dict[i].get_state()) >= 216:
+                self.tuples_dict[i].set_state('')
+                self.tuples_dict[i].set_list()
+                self.tuples_dict[i].set_times()
 
     # resolve the result about malicious or not
     def resolve(self, is_malicious, i, labels, text):

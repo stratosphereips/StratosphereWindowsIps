@@ -5,6 +5,7 @@ import datetime
 #
 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
 #
+# from StratosphereConfig import __StratosphereConfig__
 
 
 class Tuple:
@@ -15,13 +16,20 @@ class Tuple:
                      ['R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'],
                      ['1', '2', '3', '4', '5', '6', '7', '8', '9']]
 
-    def __init__(self, tuple):
+    def __init__(self, tuple, protocol):
         self.state = ''
         self.tuple = tuple
+        self.protocol = protocol
         self.time_1 = None
         self.time_2 = None
         self.time_3 = None
         self.list = []
+
+    def get_protocol(self):
+        return self.protocol
+
+    def get_state(self):
+        return self.state
 
     def add_flow(self, flow):
         self.list.append(flow)
@@ -34,6 +42,7 @@ class Tuple:
         size = float(split[12])
         # Get the duration
         duration = float(split[1])
+        # take protocol from
         # time_1 from flow
         self.time_1 = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
 

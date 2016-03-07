@@ -25,12 +25,6 @@ class Tuple:
         self.time_3 = None
         self.list = []
 
-    def get_protocol(self):
-        return self.protocol
-
-    def get_state(self):
-        return self.state
-
     def add_flow(self, flow):
         self.list.append(flow)
         self.compute_state(flow)
@@ -48,8 +42,7 @@ class Tuple:
 
         # Computing of periodicity
         symbol = ''
-        # isZero = False
-
+        is_zero = False
         if self.time_2 is not None:
             T2 = (self.time_1 - self.time_2).total_seconds()
 
@@ -75,8 +68,8 @@ class Tuple:
                 row = 3
 
         else:
+            # No data
             row = 4
-        # print 'ROW:',row
         if self.time_2 is not None:
             # Symbols (0 , . + *)
             if (T2 > 0) and (T2 <= 5):
@@ -89,7 +82,7 @@ class Tuple:
                 # isZero = True
                 symbol = '*'
             elif T2 > 3600:
-                # isZero = True
+                is_zero = True
                 temp = int(T2 / 3600)
                 symbol = ''
                 for i in range(temp):
@@ -118,7 +111,10 @@ class Tuple:
              elif duration > 10:
                 column = 8
 
-        result = self.letter_table[row][column] + symbol
+        if is_zero is False:
+            result = self.letter_table[row][column] + symbol
+        else:
+            result = symbol + self.letter_table[row][column]
 
         # Add result to state
         self.state += result
@@ -127,7 +123,36 @@ class Tuple:
         self.time_3 = self.time_2
         self.time_2 = self.time_1
 
+        # just for testing
+        # if duration is not None:
+        #     print 'duration: '+ str(duration)
+        # else:
+        #     print 'duration is NONE'
 
+        # print 'flow: ' + flow
+        # if size is not None:
+        #     print 'size: '+ str(size)
+        # else:
+        #     print 'size is NONE'
+        # if self.state is not None:
+        #     print 'state: '+ self.state
+
+    def get_protocol(self):
+        return self.protocol
+
+    def get_state(self):
+        return self.state
+
+    def set_state(self, new_state):
+        self.state = new_state
+
+    def set_list(self):
+        self.list = []
+
+    def set_times(self):
+        self.time_1 = None
+        self.time_2 = None
+        self.time_3 = None
 
 
 

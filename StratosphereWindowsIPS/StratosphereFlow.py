@@ -3,12 +3,10 @@ import sys
 import time
 import datetime
 from threading import Thread
-from StratosphereConfig import StratosphereConfig
+from StratosphereConfig import __StratosphereConfig__
 import StratosphereDetector
 import StratosphereTuple
 import StratosphereOutput
-
-config_instance = None
 
 flow_queue = Queue.Queue()
 
@@ -24,8 +22,10 @@ class ThreadQuene(Thread):
 
     def run(self):
         self.read_from_queue()
+        StratosphereOutput.show('Finish.', 1)
 
     def read_from_queue(self):
+        time.sleep(1)
         while True:
             if flow_queue.empty() is False:
                 flow = flow_queue.get()
@@ -35,22 +35,28 @@ class ThreadQuene(Thread):
                 if tuple_index in self.tuples_dict.keys():
                     self.tuples_dict[tuple_index].add_flow(flow)
                 else:
-                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]])
+                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
                     self.tuples_dict[tuple_index].add_flow(flow)
 
-                # EVERY 5 SECONDS CHECK THE TUPLES
+                # The variable "now" is time from this new flow.
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > config_instance.time_windows_length:
-                        # put the tuple label in to the ips dictionary according to ap
+                    # print '--------------------------------------------------'
+                    if (now - self.last_flow_time).seconds > __StratosphereConfig__.get_int_time_windows_length():
                         for i in self.tuples_dict:
-                            # get label: netbot, normal, spam ...
-                            label = StratosphereDetector.detect(self.tuples_dict[i].state)
-                            ip = self.tuples_dict[i].tuple[0]
-                            label_state = label
-                            if self.ips_dict.has_key(ip):
-                                label_state = self.ips_dict[ip] + label
-                            self.ips_dict[ip] = label_state + '-'
+
+                            # The Function return labels: "Normal" or "Botnet" or "Attack" or "Malware".
+                            # Right now we are not using the detected variable. Maybe we should in the future.
+                            (detected, label, matching_len) = StratosphereDetector.detect(self.tuples_dict[i])
+
+                            # The label is False, when the detector has a little information.
+                            if label is not False:
+                                ip = self.tuples_dict[i].tuple[0]
+                                label_state = label
+                                # Add the label to IP adress dictionary.
+                                if self.ips_dict.has_key(ip):
+                                    label_state = self.ips_dict[ip] + label
+                                self.ips_dict[ip] = label_state + '-'
 
                         # check if we recognize malicious
                         self.check_malicious()
@@ -60,48 +66,65 @@ class ThreadQuene(Thread):
                         self.last_flow_time = now
                 else:
                     self.last_flow_time = now
+            else:
+                # This case is just for testing, when queue is empty. It creates 2 files. First one is about tuples
+                # and second one is about ip source and their labels.
+                self.save_to_file()
+                break
 
     def check_malicious(self):
         for i in self.ips_dict:
             split = self.ips_dict[i].split('-')
             normal = 0
-            spam = 0
+            malicious = 0
             for j in range(len(split)-1):
-                # print 'split:', split[j]
-                if split[j] == 'Normal':
+                # compare labels and decide, if we find malicious
+                temp_label = split[j]
+                if temp_label == 'Normal':
                     normal += 1
-                else:
-                    spam += 1
+                elif temp_label == 'Botnet' or temp_label == 'Attack' or temp_label == 'Malware':
+                    malicious += 1
 
-            if normal > spam:
-                StratosphereOutput.show('IP: ' + i + ' : ' + 'Everything is ok.', 3)
-                StratosphereOutput.log('Nothing was found.')
-            elif normal <= spam:
-                StratosphereOutput.show(('IP: ' + i + ' : ' + 'Something is recognized!'), 3)
-                StratosphereOutput.log('Something was recognized.')
-        StratosphereOutput.show('Checking...', 3)
+            if normal >= malicious:
+                self.resolve(False, i, self.ips_dict[i], 'Detected as normal. -> IP: ')
+
+            elif normal < malicious:
+                self.resolve(True, i, self.ips_dict[i], 'Threat was detected!. -> IP: ')
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-            if len(self.tuples_dict[i].state) > config_instance.time_windows_length:
+            if len(self.tuples_dict[i].state) > __StratosphereConfig__.get_int_time_windows_length():
                 self.tuples_dict[i].state = ''
                 self.tuples_dict[i].list = []
 
+    def resolve(self, is_malicious, i, labels, text):
+        if is_malicious or __StratosphereConfig__.get_bool_print_all_labels():
+            StratosphereOutput.show(text + i, 2)
+            StratosphereOutput.show(i + ' -> ' + labels, 2)
 
-def set_config_instance():
-    StratosphereConfig()
-    global config_instance
-    config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
-    config_instance.check_config()
+            StratosphereOutput.log(text + i)
+            StratosphereOutput.log(i + ' -> ' + labels)
 
-    # import config instance in 'StratosphereOutput'
-    StratosphereOutput.import_instance()
+    # This function is temporary just for printing
+    # the information about tuples and ips and their labels.
+    def save_to_file(self):
+        f = open('test_TupleFile', 'w')
+        for i in self.tuples_dict:
+            # StratosphereOutput.show(('[%s]: %s' % (', '.join(map(str, i)), tuples_dict[i].state)), 3)
+            f.write(('[%s]: %s' % (', '.join(map(str, i)), self.tuples_dict[i].state) + '\n'))
+        f.close()
+
+        f = open('test_IPsFile', 'w')
+        for i in self.ips_dict:
+            # StratosphereOutput.show(i + ' -> ' + ips_dict[i], 3)
+            f.write(i + ' -> ' + self.ips_dict[i] + '\n')
+        f.close()
 
 
 if __name__ == "__main__":
 
     # import the config instance to the "config_instance".
-    set_config_instance()
+    # set_config_instance()
 
     t2 = ThreadQuene()
     t2.start()
@@ -111,20 +134,3 @@ if __name__ == "__main__":
     for line in sys.stdin:
         # print 'Flow', line
         flow_queue.put(line)
-    StratosphereOutput.log('Queue is empty.')
-
-    # Wait for end of analyze
-    while flow_queue.empty() is False:
-        time.sleep(3)
-
-    # Print Dictionary
-    f = open('TupleFile', 'w')
-    for i in t2.tuples_dict:
-        StratosphereOutput.show(('- [%s]: %s' % (', '.join(map(str, i)), t2.tuples_dict[i].state)), 3)
-        f.write('[%s]:     %s\n' % (t2.tuples_dict[i].state, ', '.join(map(str, i))))
-    f.close()
-
-    StratosphereOutput.show('Results:', 3)
-    print len(t2.ips_dict)
-    for i in t2.ips_dict:
-        StratosphereOutput.show(('state: ', t2.ips_dict[i]), 3)

@@ -11,7 +11,7 @@ class StratosphereConfig:
         self.days_update_again = 3
         self.is_forbidden = False
         self.date_string = str(datetime.date.today())
-        self.check_if_process_work = 3
+        self.check_if_process_work = 10
         self.url_to_classes = 'https://raw.githubusercontent.com/stratosphereips/StratosphereIps/Frenky/StratosphereWindowsIPS/StratosphereWindow.py'
         self.url_to_modules = 'http://mcfp.felk.cvut.cz/stratosphere/stratospherewindowsips/modules/modules.zip'
         self.url_to_models = 'http://mcfp.felk.cvut.cz/stratosphere/stratospherewindowsips/models/models.zip'

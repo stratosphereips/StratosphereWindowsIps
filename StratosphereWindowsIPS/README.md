@@ -9,7 +9,9 @@ Run comand line and put this:
 python  your_path + \StratosphereWatcher.py arg1 arg2
 
 where:
+
 arg1 is path to StratosphereFlow file: your_path + \StratosphereFlow.py
+
 arg2 is path to binetflow file: your_path + \file.binetflow
 
 Example:

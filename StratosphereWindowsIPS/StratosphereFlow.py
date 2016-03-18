@@ -38,15 +38,13 @@ class ThreadQuene(Thread):
                     self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
                     self.tuples_dict[tuple_index].add_flow(flow)
 
-
-
                 # The variable "now" is time from this new flow.
                 now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
                 if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds > __StratosphereConfig__.get_int_time_windows_length():
+                    if (now - self.last_flow_time).seconds >= __StratosphereConfig__.get_int_time_windows_length():
 
-                        StratosphereOutput.show('--Start time_window: ' + str(datetime.datetime.now()), 1)
-                        StratosphereOutput.log('--Start time_window: ' + str(datetime.datetime.now()))
+                        # StratosphereOutput.show('--Start time_window: ' + str(datetime.datetime.now()), 1)
+                        # StratosphereOutput.log('--Start time_window: ' + str(datetime.datetime.now()))
 
                         for i in self.tuples_dict:
 
@@ -70,8 +68,8 @@ class ThreadQuene(Thread):
                         # set new time
                         self.last_flow_time = now
 
-                        StratosphereOutput.show('--End time_window: ' + str(datetime.datetime.now()), 1)
-                        StratosphereOutput.log('--End time_window: ' + str(datetime.datetime.now()))
+                        # StratosphereOutput.show('--End time_window: ' + str(datetime.datetime.now()), 1)
+                        # StratosphereOutput.log('--End time_window: ' + str(datetime.datetime.now()))
 
                 else:
                     self.last_flow_time = now
@@ -87,11 +85,13 @@ class ThreadQuene(Thread):
             normal = 0
             malicious = 0
             for j in range(len(split)-1):
-                # compare labels and decide, if we find malicious
+                # Compare labels and decide, if we find malicious.
                 temp_label = split[j]
-                if temp_label == 'Normal':
+                # To lower cases.
+                temp_label.lower()
+                if temp_label == 'normal':
                     normal += 1
-                elif temp_label == 'Botnet' or temp_label == 'Attack' or temp_label == 'Malware':
+                elif temp_label == 'botnet' or temp_label == 'attack' or temp_label == 'malware':
                     malicious += 1
 
             if normal >= malicious:
@@ -108,7 +108,7 @@ class ThreadQuene(Thread):
                 self.tuples_dict[i].set_list()
                 self.tuples_dict[i].set_times()
 
-    # resolve the result about malicious or not
+    # Resolve the result about malicious or not.
     def resolve(self, is_malicious, i, labels, text):
         if is_malicious or __StratosphereConfig__.get_bool_print_all_labels():
             StratosphereOutput.show(text + i + ' -> ' + labels, 2)
@@ -117,6 +117,7 @@ class ThreadQuene(Thread):
     # This function is temporary just for printing
     # the information about tuples and ips and their labels.
     def save_to_file(self):
+
         f = open('test_TupleFile', 'w')
         for i in self.tuples_dict:
             # StratosphereOutput.show(('[%s]: %s' % (', '.join(map(str, i)), tuples_dict[i].state)), 3)
@@ -131,9 +132,6 @@ class ThreadQuene(Thread):
 
 
 if __name__ == "__main__":
-
-    # import the config instance to the "config_instance".
-    # set_config_instance()
 
     t2 = ThreadQuene()
     t2.start()

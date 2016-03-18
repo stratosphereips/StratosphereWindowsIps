@@ -1,6 +1,7 @@
 __author__ = 'Frenky'
 
 import datetime
+import StratosphereOutput
 # config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
 #
 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
@@ -66,10 +67,10 @@ class Tuple:
                 row = 2
             elif TD > 5:
                 row = 3
-
         else:
             # No data
             row = 4
+
         if self.time_2 is not None:
             # Symbols (0 , . + *)
             if (T2 > 0) and (T2 <= 5):
@@ -87,6 +88,8 @@ class Tuple:
                 symbol = ''
                 for i in range(temp):
                     symbol += '0'
+
+
 
         # size and duration of flow
         if size <= 250:
@@ -123,19 +126,11 @@ class Tuple:
         self.time_3 = self.time_2
         self.time_2 = self.time_1
 
-        # just for testing
-        # if duration is not None:
-        #     print 'duration: '+ str(duration)
-        # else:
-        #     print 'duration is NONE'
+        StratosphereOutput.show('Flow = ' + str(split), 2)
+        StratosphereOutput.log('Flow = ' + str(split))
 
-        # print 'flow: ' + flow
-        # if size is not None:
-        #     print 'size: '+ str(size)
-        # else:
-        #     print 'size is NONE'
-        # if self.state is not None:
-        #     print 'state: '+ self.state
+        StratosphereOutput.show('State: ' + self.state, 3)
+        StratosphereOutput.log('State: ' + self.state)
 
     def get_protocol(self):
         return self.protocol

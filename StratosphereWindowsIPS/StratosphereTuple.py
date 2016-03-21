@@ -49,10 +49,6 @@ class Tuple:
 
         if (self.time_2 is not None) and (self.time_3 is not None):
             T1 = (self.time_2 - self.time_3).total_seconds()
-            # T2 = (self.time_1 - self.time_2).total_seconds()
-
-            # print 'T1:', T1
-            # print 'T2:', T2
 
             if T1 > T2:
                 TD = T1/T2
@@ -71,6 +67,23 @@ class Tuple:
             # No data
             row = 4
 
+        # -----------------------------
+        # ----- First part: zeros -----
+        # -----------------------------
+        zeros = ''
+        if (self.time_2 is not None) and (T2 > 3600):
+            temp = int(T2 / 3600)
+            for i in range(temp):
+                zeros += '0'
+        else:
+            if (self.time_2 is not None) and (self.time_3 is not None) and (T1 > 3600):
+                temp = int(T1 / 3600)
+                for i in range(temp):
+                    zeros += '0'
+
+        # --------------------------------------
+        # ---- Third part: Create symbol -------
+        # --------------------------------------
         if self.time_2 is not None:
             # Symbols (0 , . + *)
             if (T2 > 0) and (T2 <= 5):
@@ -82,16 +95,10 @@ class Tuple:
             elif (T2 > 300) and (T2 <= 3600):
                 # isZero = True
                 symbol = '*'
-            elif T2 > 3600:
-                is_zero = True
-                temp = int(T2 / 3600)
-                symbol = ''
-                for i in range(temp):
-                    symbol += '0'
 
-
-
-        # size and duration of flow
+        # -------------------------------------------
+        # ------- Second part: Create letter --------
+        # -------------------------------------------
         if size <= 250:
             if duration <= 0.1:
                 column = 0
@@ -114,10 +121,8 @@ class Tuple:
              elif duration > 10:
                 column = 8
 
-        if is_zero is False:
-            result = self.letter_table[row][column] + symbol
-        else:
-            result = symbol + self.letter_table[row][column]
+        # Append 3 parts together -> "zeros + letter + symbol."
+        result = zeros + self.letter_table[row][column] + symbol
 
         # Add result to state
         self.state += result

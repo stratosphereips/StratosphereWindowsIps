@@ -18,7 +18,7 @@ class ThreadQuene(Thread):
         Thread.__init__(self)
         self.tuples_dict = dict()
         self.ips_dict = dict()
-        self.last_flow_time = None
+        self.first_flow_in_time_window = None
 
     def run(self):
         self.read_from_queue()
@@ -32,31 +32,28 @@ class ThreadQuene(Thread):
                 split = flow.split(',')
                 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
                 tuple_index = split[3], split[6], split[7], split[2]
-                if tuple_index in self.tuples_dict.keys():
-                    self.tuples_dict[tuple_index].add_flow(flow)
-                else:
-                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
-                    self.tuples_dict[tuple_index].add_flow(flow)
 
-                # The variable "now" is time from this new flow.
-                now = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
-                if self.last_flow_time is not None:
-                    if (now - self.last_flow_time).seconds >= __StratosphereConfig__.get_int_time_windows_length():
+                # The variable "current_flow_time" is time from this new flow.
+                current_flow_time = datetime.datetime.strptime(split[0], '%Y/%m/%d %H:%M:%S.%f')
 
-                        # StratosphereOutput.show('--Start time_window: ' + str(datetime.datetime.now()), 1)
-                        # StratosphereOutput.log('--Start time_window: ' + str(datetime.datetime.now()))
+                if self.first_flow_in_time_window is not None:
+
+                    time_difference = (current_flow_time - self.first_flow_in_time_window).seconds
+
+                    if time_difference >= __StratosphereConfig__.get_int_time_windows_length():
+
+                        self.print_time_window(last_flow_in_time_window)
 
                         for i in self.tuples_dict:
-
                             # The Function return labels: "Normal" or "Botnet" or "Attack" or "Malware".
-                            # Right now we are not using the detected variable. Maybe we should in the future.
+                            # Right current_flow_time we are not using the detected variable. Maybe we should in the future.
                             (detected, label, matching_len) = StratosphereDetector.detect(self.tuples_dict[i])
 
                             # The label is False, when the detector has a little information
                             if label is not False:
                                 ip = self.tuples_dict[i].tuple[0]
                                 label_state = label
-                                # Add the label to IP adress dictionary.
+                                # Add the label to IP address dictionary.
                                 if self.ips_dict.has_key(ip):
                                     label_state = self.ips_dict[ip] + label
                                 self.ips_dict[ip] = label_state + '-'
@@ -66,18 +63,35 @@ class ThreadQuene(Thread):
                         # check lengths of tuple state
                         self.check_tuple_size()
                         # set new time
-                        self.last_flow_time = now
-
-                        # StratosphereOutput.show('--End time_window: ' + str(datetime.datetime.now()), 1)
-                        # StratosphereOutput.log('--End time_window: ' + str(datetime.datetime.now()))
+                        self.first_flow_in_time_window = current_flow_time
 
                 else:
-                    self.last_flow_time = now
+                    self.first_flow_in_time_window = current_flow_time
+
+                # Add flow to exist tuple object or crete new tuple object and add flow.
+                if tuple_index in self.tuples_dict.keys():
+                    self.tuples_dict[tuple_index].add_flow(flow)
+                else:
+                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
+                    self.tuples_dict[tuple_index].add_flow(flow)
+
+                last_flow_in_time_window = current_flow_time
+
             else:
                 # This case is just for testing, when queue is empty. It creates 2 files. First one is about tuples
                 # and second one is about ip source and their labels.
                 self.save_to_file()
                 break
+
+    def print_time_window(self, last_flow_in_time_window):
+        # PRINT START TIME, FINISH TIME AND LAST FLOW Of WINDOW TIME
+        StratosphereOutput.show('Time_window started: ' + str(self.first_flow_in_time_window) + ' Finished: ' + str(self.first_flow_in_time_window + datetime.timedelta(seconds =__StratosphereConfig__.get_int_time_windows_length()))
+                                + ' Last flow: ' + str(last_flow_in_time_window), 1)
+        StratosphereOutput.show('=============================================================================', 1)
+
+        StratosphereOutput.log('Time_window started: ' + str(self.first_flow_in_time_window) + ' Finished: ' + str(self.first_flow_in_time_window + datetime.timedelta(seconds =__StratosphereConfig__.get_int_time_windows_length()))
+                                + ' Last flow: ' + str(last_flow_in_time_window))
+        StratosphereOutput.log('==============================================================================')
 
     def check_malicious(self):
         for i in self.ips_dict:

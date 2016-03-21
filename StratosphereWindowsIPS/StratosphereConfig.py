@@ -18,6 +18,7 @@ class StratosphereConfig:
         self.length_of_state = 100
         self.time_windows_length = 300
         self.printAllLabels = False
+        self.path_to_source_folder = 'C:\\Users\\frenk\\Documents\\Skola\\Stratosphere\\StratosphereWindowsIPS\\'
         # STRATOSPHERE_WATCHER
         self.run_on_start = True
         # STRATOSPHERE OUTPUT
@@ -41,6 +42,7 @@ class StratosphereConfig:
             self.verbose_option = self.config.getint('STRATOSPHERE_OUTPUT', 'VERBOSE_OPTION')
             self.url_to_modules = self.config.get('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODULES')
             self.url_to_models = self.config.get('STRATOSPHERE_WINDOW', 'UPDATE_URL_MODELS')
+            self.path_to_source_folder = self.config.get('STRATOSPHERE_WINDOW', 'PATH_TO_SOURCE_FOLDER')
 
         except:
             # FIRST SECTION
@@ -64,6 +66,8 @@ class StratosphereConfig:
             self.config.set('STRATOSPHERE_WINDOW', 'TIME_WINDOWS_LENGTH', self.time_windows_length)
             self.config.set('STRATOSPHERE_WINDOW', '; PRINT ALL LABELS -> TRUE; PRINT LABELS, ONLY WHEN SOMETHING IS DETECTED -> FALSE')
             self.config.set('STRATOSPHERE_WINDOW', 'PRINT_ALL_LABELS', self.printAllLabels)
+            self.config.set('STRATOSPHERE_WINDOW', '; PATH TO FOLDER, WHERE ALL FILES ARE LOCATED.')
+            self.config.set('STRATOSPHERE_WINDOW', 'PATH_TO_SOURCE_FOLDER', self.path_to_source_folder)
 
             # SECOND SECTION
             self.config.add_section('STRATOSPHERE_WATCHER')
@@ -123,5 +127,8 @@ class StratosphereConfig:
 
     def get_bool_print_all_labels(self):
         return self.printAllLabels
+
+    def get_path_to_source_folder(self):
+        return self.path_to_source_folder
 
 __StratosphereConfig__ = StratosphereConfig()

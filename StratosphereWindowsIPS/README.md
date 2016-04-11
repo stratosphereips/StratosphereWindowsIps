@@ -23,4 +23,6 @@ First the program downloads necessary files and then runs. You can also manage t
 TODO:
 ---------------------
 * create install app.
+* runable argus.
+* windows service
 

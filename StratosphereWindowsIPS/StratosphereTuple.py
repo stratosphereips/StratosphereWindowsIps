@@ -2,11 +2,8 @@ __author__ = 'Frenky'
 
 import datetime
 import StratosphereOutput
-# config_instance = __import__('StratosphereConfig').StratosphereConfig.config_instance
-#
+
 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
-#
-# from StratosphereConfig import __StratosphereConfig__
 
 
 class Tuple:
@@ -136,6 +133,9 @@ class Tuple:
 
         StratosphereOutput.show('State: ' + self.state, 3)
         StratosphereOutput.log('State: ' + self.state)
+
+    def get_id(self):
+        return self.tuple
 
     def get_protocol(self):
         return self.protocol

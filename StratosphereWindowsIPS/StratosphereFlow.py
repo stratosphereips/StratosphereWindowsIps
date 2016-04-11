@@ -56,7 +56,7 @@ class ThreadQuene(Thread):
                                 # Add the label to IP address dictionary.
                                 if self.ips_dict.has_key(ip):
                                     label_state = self.ips_dict[ip] + label
-                                self.ips_dict[ip] = label_state + '-'
+                                self.ips_dict[ip] = label_state + ';'
 
                         # check if we recognize malicious
                         self.check_malicious()
@@ -72,7 +72,7 @@ class ThreadQuene(Thread):
                 if tuple_index in self.tuples_dict.keys():
                     self.tuples_dict[tuple_index].add_flow(flow)
                 else:
-                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2])
+                    self.tuples_dict[tuple_index] = StratosphereTuple.Tuple([split[3], split[6], split[7], split[2]], split[2]) # tuple, protocol, id
                     self.tuples_dict[tuple_index].add_flow(flow)
 
                 last_flow_in_time_window = current_flow_time
@@ -95,17 +95,17 @@ class ThreadQuene(Thread):
 
     def check_malicious(self):
         for i in self.ips_dict:
-            split = self.ips_dict[i].split('-')
+            split = self.ips_dict[i].split(';')
             normal = 0
             malicious = 0
             for j in range(len(split)-1):
                 # Compare labels and decide, if we find malicious.
                 temp_label = split[j]
                 # To lower cases.
-                temp_label.lower()
-                if temp_label == 'normal':
+                temp_label_lower = temp_label.lower()
+                if 'normal' in temp_label_lower:
                     normal += 1
-                elif temp_label == 'botnet' or temp_label == 'attack' or temp_label == 'malware':
+                elif 'botnet' in temp_label_lower or 'attack' in temp_label_lower or 'malware' in temp_label_lower:
                     malicious += 1
 
             if normal >= malicious:
@@ -116,8 +116,8 @@ class ThreadQuene(Thread):
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-            # if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
-            if len(self.tuples_dict[i].get_state()) >= 216:
+             if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
+            # if len(self.tuples_dict[i].get_state()) >= 216:
                 self.tuples_dict[i].set_state('')
                 self.tuples_dict[i].set_list()
                 self.tuples_dict[i].set_times()
@@ -131,7 +131,6 @@ class ThreadQuene(Thread):
     # This function is temporary just for printing
     # the information about tuples and ips and their labels.
     def save_to_file(self):
-
         f = open('test_TupleFile', 'w')
         for i in self.tuples_dict:
             # StratosphereOutput.show(('[%s]: %s' % (', '.join(map(str, i)), tuples_dict[i].state)), 3)

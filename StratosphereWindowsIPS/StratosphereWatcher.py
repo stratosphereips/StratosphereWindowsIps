@@ -99,16 +99,16 @@ def check_if_update():
 
 if __name__ == "__main__":
 
-    # checking if
+    # checking if should we update.
     check_if_update()
 
     # Path to StratospehereFlow
-    path_to_StrapFlow = sys.argv[1]
+    path_to_source_folder = __StratosphereConfig__.get_path_to_source_folder()
     # Path to binet flows
-    path_to_binetflow = sys.argv[2]
+    path_to_binetflow = sys.argv[1]
 
     # Create process.
-    command = ('cat ' + path_to_binetflow + ' | python ' + path_to_StrapFlow)
+    command = ('cat ' + path_to_binetflow + ' | python ' + path_to_source_folder + 'StratosphereFlow.py')
     p = subprocess.Popen(command, shell=True)
 
     # Wait until process terminates.

@@ -47,6 +47,7 @@ class ThreadQuene(Thread):
                         for i in self.tuples_dict:
                             # The Function return labels: "Normal" or "Botnet" or "Attack" or "Malware".
                             # Right current_flow_time we are not using the detected variable. Maybe we should in the future.
+                            # print 'prd', self.tuples_dict[i].state
                             (detected, label, matching_len) = StratosphereDetector.detect(self.tuples_dict[i])
 
                             # The label is False, when the detector has a little information
@@ -58,8 +59,10 @@ class ThreadQuene(Thread):
                                     label_state = self.ips_dict[ip] + label
                                 self.ips_dict[ip] = label_state + ';'
 
-                        # check if we recognize malicious
-                        self.check_malicious()
+                                # check if we recognize malicious
+                                state = self.tuples_dict[i].state
+                                self.check_malicious(ip, label_state + ';', state, str(len(state.split(','))))
+
                         # check lengths of tuple state
                         self.check_tuple_size()
                         # set new time
@@ -93,40 +96,41 @@ class ThreadQuene(Thread):
                                 + ' Last flow: ' + str(last_flow_in_time_window))
         StratosphereOutput.log('==============================================================================')
 
-    def check_malicious(self):
-        for i in self.ips_dict:
-            split = self.ips_dict[i].split(';')
-            normal = 0
-            malicious = 0
-            for j in range(len(split)-1):
-                # Compare labels and decide, if we find malicious.
-                temp_label = split[j]
-                # To lower cases.
-                temp_label_lower = temp_label.lower()
-                if 'normal' in temp_label_lower:
-                    normal += 1
-                elif 'botnet' in temp_label_lower or 'attack' in temp_label_lower or 'malware' in temp_label_lower:
-                    malicious += 1
+    def check_malicious(self, ip, labels, state, len_of_state):
+        split = labels.split(';')
+        normal = 0
+        malicious = 0
+        for j in range(len(split)-1):
+            # Compare labels and decide, if we find malicious.
+            temp_label = split[j]
+            # To lower cases.
+            temp_label_lower = temp_label.lower()
+            if 'normal' in temp_label_lower:
+                normal += 1
+            elif 'botnet' in temp_label_lower or 'attack' in temp_label_lower or 'malware' in temp_label_lower:
+                malicious += 1
 
-            if normal >= malicious:
-                self.resolve(False, i, self.ips_dict[i], 'Detected as normal. -> IP: ')
+        if normal >= malicious:
+            self.resolve(False, ip, labels, state, len_of_state, 'Detected as normal. -> IP: ')
 
-            elif normal < malicious:
-                self.resolve(True, i, self.ips_dict[i], 'Threat was detected!. -> IP: ')
+        elif normal < malicious:
+            self.resolve(True, ip, labels, state, len_of_state, 'Threat was detected!. -> IP: ')
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-             if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
-            # if len(self.tuples_dict[i].get_state()) >= 216:
+             # if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
+             if len(self.tuples_dict[i].get_state()) >= 216:
                 self.tuples_dict[i].set_state('')
                 self.tuples_dict[i].set_list()
                 self.tuples_dict[i].set_times()
 
     # Resolve the result about malicious or not.
-    def resolve(self, is_malicious, i, labels, text):
+    def resolve(self, is_malicious, i, labels, state, len, text):
         if is_malicious or __StratosphereConfig__.get_bool_print_all_labels():
-            StratosphereOutput.show(text + i + ' -> ' + labels, 2)
-            StratosphereOutput.log(text + i + ' -> ' + labels)
+            StratosphereOutput.show(text + i + ' -> tuple(' + len + '): ' + state + ' -> ' + labels, 2)
+            StratosphereOutput.show('=============================================================================', 2)
+            StratosphereOutput.log(text + i + ' -> tuple(' + len + '): ' + state + ' -> ' + labels)
+            StratosphereOutput.log('==============================================================================')
 
     # This function is temporary just for printing
     # the information about tuples and ips and their labels.

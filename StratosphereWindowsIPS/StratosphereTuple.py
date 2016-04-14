@@ -128,10 +128,10 @@ class Tuple:
         self.time_3 = self.time_2
         self.time_2 = self.time_1
 
-        StratosphereOutput.show('Flow = ' + str(split), 2)
+        StratosphereOutput.show('Flow = ' + str(split), 4)
         StratosphereOutput.log('Flow = ' + str(split))
 
-        StratosphereOutput.show('State: ' + self.state, 3)
+        StratosphereOutput.show('State: ' + self.state, 4)
         StratosphereOutput.log('State: ' + self.state)
 
     def get_id(self):

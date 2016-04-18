@@ -19,6 +19,34 @@ Example:
 First the program downloads necessary files and then runs. You can also manage the configuration file, where are some features for this program.
 
 
+Files in project
+----------------------
+
+StratosphereWatcher.py 
+- downloading updates and files
+- creating process
+- in future it shoud start windows service.
+
+StratosphereFlow.py
+- it takes flows from stdin
+- it decides when tim_window starts and ends
+- it stores flows in queue
+- it stores tuple object a ip 
+
+StratosphereTuple.py
+- it creates tuple_objects
+- one tuple object has a list of flows
+- it computes state for current tuple
+
+StratosphereDetector.py
+- it calles modules for detecting.
+
+StratosphereConfig.py
+- it creates config file with implicit settings, if there is no config file.
+
+StratosphereOutput.py
+- For printing a logging.
+
 
 TODO:
 ---------------------

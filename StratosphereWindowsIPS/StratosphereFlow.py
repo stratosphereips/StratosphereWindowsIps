@@ -19,16 +19,35 @@ class ThreadQuene(Thread):
         self.tuples_dict = dict()
         self.ips_dict = dict()
         self.first_flow_in_time_window = None
+        self.number_of_trying =0
 
     def run(self):
+        #
+        # while True:
+        #     if self.number_of_trying > 3:
+        #         break
+        #     self.read_from_queue()
+        #     time.sleep(1)
+        #     self.number_of_trying += 1
+
         self.read_from_queue()
         StratosphereOutput.show('Finish.', 1)
+        print(flow_queue.empty())
 
     def read_from_queue(self):
         time.sleep(1)
         while True:
             if flow_queue.empty() is False:
+                # varible for ending this process. If it is bigger then 3, so this process will be finished.
+                # So here, when queue is not empty we will put this to 0 again.
+                self.number_of_trying = 0
+                # Get fow from queue
                 flow = flow_queue.get()
+
+                # In each binetflow file first line is describtion
+                if 'StartTime' in flow:
+                    continue
+
                 split = flow.split(',')
                 # Tuple: SRC IP, DST IP, DST PORT, PROTOCOL
                 tuple_index = split[3], split[6], split[7], split[2]
@@ -61,6 +80,8 @@ class ThreadQuene(Thread):
 
                                 # check if we recognize malicious
                                 state = self.tuples_dict[i].state
+                                # matching_len gives number from all letters in label, you should count like this:
+                                # 11,a,a,a,a,a,a ... so here one letter is 1 and 1, and a, a, so on and it is same
                                 self.check_malicious(ip, label_state + ';', state, str(len(state.split(','))))
 
                         # check lengths of tuple state
@@ -83,8 +104,10 @@ class ThreadQuene(Thread):
             else:
                 # This case is just for testing, when queue is empty. It creates 2 files. First one is about tuples
                 # and second one is about ip source and their labels.
-                self.save_to_file()
+                # self.save_to_file()
+                # time.sleep(1)
                 break
+
 
     def print_time_window(self, last_flow_in_time_window):
         # PRINT START TIME, FINISH TIME AND LAST FLOW Of WINDOW TIME
@@ -118,8 +141,10 @@ class ThreadQuene(Thread):
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-             # if len(self.tuples_dict[i].get_state()) > __StratosphereConfig__.get_int_length_of_state():
-             if len(self.tuples_dict[i].get_state()) >= 216:
+              # print 'lenght of tuple: ', self.tuples_dict[i].get_len_list()
+              # print 'len for 100: ',len(self.tuples_dict[i].get_state())
+              if self.tuples_dict[i].get_len_list() > __StratosphereConfig__.get_int_length_of_state():
+             # if len(self.tuples_dict[i].get_state()) >= 216:
                 self.tuples_dict[i].set_state('')
                 self.tuples_dict[i].set_list()
                 self.tuples_dict[i].set_times()

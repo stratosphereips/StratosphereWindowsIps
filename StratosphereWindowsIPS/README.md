@@ -3,7 +3,7 @@ STRATOSPHERE WINDOWS IPS
 
 How to execute it ?
 -----------
-
+1.
 Run comand line and put this:
 
 python  your_path + \StratosphereWatcher.py arg1
@@ -17,6 +17,14 @@ Example:
 "python C:\Users\User\Documents\StratosphereWindowsIPS\StratosphereWatcher.py C:\Users\User\Documents\StratosphereWindowsIPS\file.binetflow"
 
 First the program downloads necessary files and then runs. You can also manage the configuration file, where are some features for this program.
+
+2.
+Next way is:
+
+"cat file.binetflow | python StratosphereFlow.py"
+
+This possibility is better for fast case, because there is not checking updates.
+Caution: For first running this program, you use first case for running. The reason is config file, which is created in StratosphereWatcher.
 
 
 Files in project

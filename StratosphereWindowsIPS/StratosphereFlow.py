@@ -22,15 +22,15 @@ class ThreadQuene(Thread):
         self.number_of_trying =0
 
     def run(self):
-        #
-        # while True:
-        #     if self.number_of_trying > 3:
-        #         break
-        #     self.read_from_queue()
-        #     time.sleep(1)
-        #     self.number_of_trying += 1
 
-        self.read_from_queue()
+        while True:
+            if self.number_of_trying > 3:
+                break
+            self.read_from_queue()
+            time.sleep(1)
+            self.number_of_trying += 1
+
+        # self.read_from_queue()
         StratosphereOutput.show('Finish.', 1)
         print(flow_queue.empty())
 
@@ -141,10 +141,7 @@ class ThreadQuene(Thread):
 
     def check_tuple_size(self):
         for i in self.tuples_dict:
-              # print 'lenght of tuple: ', self.tuples_dict[i].get_len_list()
-              # print 'len for 100: ',len(self.tuples_dict[i].get_state())
               if self.tuples_dict[i].get_len_list() > __StratosphereConfig__.get_int_length_of_state():
-             # if len(self.tuples_dict[i].get_state()) >= 216:
                 self.tuples_dict[i].set_state('')
                 self.tuples_dict[i].set_list()
                 self.tuples_dict[i].set_times()
@@ -180,6 +177,7 @@ if __name__ == "__main__":
 
     # Reading Flows from STDIN
     StratosphereOutput.log('Reading flows from Queue.')
+
     for line in sys.stdin:
-        # print 'Flow', line
+        print '#print flow *********************'
         flow_queue.put(line)

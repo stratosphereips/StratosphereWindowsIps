@@ -102,10 +102,6 @@ class ThreadQuene(Thread):
                 last_flow_in_time_window = current_flow_time
 
             else:
-                # This case is just for testing, when queue is empty. It creates 2 files. First one is about tuples
-                # and second one is about ip source and their labels.
-                # self.save_to_file()
-                # time.sleep(1)
                 break
 
 
@@ -149,8 +145,8 @@ class ThreadQuene(Thread):
     # Resolve the result about malicious or not.
     def resolve(self, is_malicious, i, labels, state, len, text):
         if is_malicious or __StratosphereConfig__.get_bool_print_all_labels():
-            StratosphereOutput.show(text + i + ' -> tuple(' + len + '): ' + state + ' -> ' + labels, 2)
-            StratosphereOutput.show('=============================================================================', 2)
+            StratosphereOutput.show(text + i + ' -> tuple(' + len + '): ' + state + ' -> ' + labels, 1)
+            StratosphereOutput.show('=============================================================================', 1)
             StratosphereOutput.log(text + i + ' -> tuple(' + len + '): ' + state + ' -> ' + labels)
             StratosphereOutput.log('==============================================================================')
 
@@ -175,9 +171,12 @@ if __name__ == "__main__":
     t2 = ThreadQuene()
     t2.start()
 
-    # Reading Flows from STDIN
     StratosphereOutput.log('Reading flows from Queue.')
 
-    for line in sys.stdin:
-        print '#print flow *********************'
+    while True:
+        # Take line from stdin and put line to flow_queue, one line is one flow
+        line = sys.stdin.readline()
         flow_queue.put(line)
+        if not line:
+            break
+

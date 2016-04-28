@@ -14,14 +14,14 @@ arg1 is path to binetflow file: your_path + \file.binetflow
 
 Example:
 
-"python C:\Users\User\Documents\StratosphereWindowsIPS\StratosphereWatcher.py C:\Users\User\Documents\StratosphereWindowsIPS\file.binetflow"
+"python C:\Users\User\Documents\StratosphereWindowsIPS\StratosphereWatcher.py C:\Users\User\Documents\StratosphereWindowsIPS\test7.binetflow"
 
 First the program downloads necessary files and then runs. You can also manage the configuration file, where are some features for this program.
 
 2.
 Next way is:
 
-"cat file.binetflow | python StratosphereFlow.py"
+"cat test7.binetflow | python StratosphereFlow.py"
 
 This possibility is better for fast case, because there is not checking updates.
 Caution: For first running this program, you use first case for running. The reason is config file, which is created in StratosphereWatcher.

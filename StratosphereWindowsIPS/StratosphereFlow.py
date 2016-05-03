@@ -24,15 +24,14 @@ class ThreadQuene(Thread):
     def run(self):
 
         while True:
-            if self.number_of_trying > 3:
+            # Wait 5 second if no data are coming.
+            if self.number_of_trying > 5:
                 break
             self.read_from_queue()
             time.sleep(1)
             self.number_of_trying += 1
 
-        # self.read_from_queue()
         StratosphereOutput.show('Finish.', 1)
-        print(flow_queue.empty())
 
     def read_from_queue(self):
         time.sleep(1)
@@ -102,6 +101,7 @@ class ThreadQuene(Thread):
                 last_flow_in_time_window = current_flow_time
 
             else:
+                StratosphereOutput.show('No data...', 2)
                 break
 
 
@@ -176,7 +176,6 @@ if __name__ == "__main__":
     while True:
         # Take line from stdin and put line to flow_queue, one line is one flow
         line = sys.stdin.readline()
-        flow_queue.put(line)
         if not line:
             break
-
+        flow_queue.put(line)

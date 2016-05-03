@@ -111,13 +111,22 @@ if __name__ == "__main__":
     command = ('cat ' + path_to_binetflow + ' | python ' + path_to_source_folder + 'StratosphereFlow.py')
     p = subprocess.Popen(command, shell=True)
 
-    # Wait until process terminates.
+    # ======= Development mode verison =======
     while True:
-        if p.poll() is None:
-            StratosphereOutput.show("Process is still runnning...", 3)
-            time.sleep(__StratosphereConfig__.get_int_check_if_process_work())
-        else:
-            # This is coment for testing mode.
-            # p = subprocess.Popen(command, shell=True)
-            pass
-    StratosphereOutput.show(("Process ended, ret code:", p.returncode), 2)
+        if p.poll() is not None:
+            break
+        time.sleep(__StratosphereConfig__.get_int_check_if_process_work())
+
+
+    # ======== For real mode. =======
+    # Start process again, if it terminates.
+    # ===============================
+    # while True:
+    #     if p.poll() is None:
+    #         StratosphereOutput.show("Process is still runnning...", 4)
+    #         time.sleep(__StratosphereConfig__.get_int_check_if_process_work())
+    #     else:
+    #         # This is coment for testing mode.
+    #         p = subprocess.Popen(command, shell=True)
+    #         pass
+    # StratosphereOutput.show(("Process ended, ret code:", p.returncode), 2)

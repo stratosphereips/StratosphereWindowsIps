@@ -1,6 +1,7 @@
 # Stratosphere Windows IPS
 Stratosphere Windows IPS is the Microsoft version of the Stratosphere IPS project. The tool runs in the same way as the Stratosphere Linux IPS, but using windows libraries.
 This tool is provided for being used by personal users in their computers. The tool can provide a reliable detection of malicious connections based on the download models. Please note that this tool is still Beta.
+See the oficial web page of the [Stratosphere Project](https:stratosphereips.org)
 
 # How to Use it
 

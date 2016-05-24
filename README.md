@@ -1,15 +1,15 @@
 # Stratosphere Windows IPS
-Stratosphere Windows IPS is the Microsoft version of the Startosphere IPS project. The tool runs in the same way as the Stratosphere Linux IPS, but using windows libraries.
+Stratosphere Windows IPS is the Microsoft version of the Stratosphere IPS project. The tool runs in the same way as the Stratosphere Linux IPS, but using windows libraries.
 This tool is provided for being used by personal users in their computers. The tool can provide a reliable detection of malicious connections based on the download models. Please note that this tool is still Beta.
 
 # How to Use it
 
-There are three ways of using the Stratosphere Windows IPS. By giving the binetflow file as parameter, by reading the binetflow file from StdIn, or by reading the flows from an Argus tool by StdIn. If you want to analyze your own traffic to make detections, you need to install an Argus program
-in some computer that has accesss to the traffic. The Argus program can run under the same Windows computer (see [Installation of Argus under Windows](#installation of argus under windows)) or can be run in any other computer.
+There are three ways of using the Stratosphere Windows IPS. By giving the binetflow file as parameter, by reading the binetflow file from Stdin, or by reading the flows from an Argus tool by Stdin. If you want to analyze your own traffic to make detections, you need to install an Argus program
+in some computer that has access to the traffic. The Argus program can run under the same Windows computer (see [Installation of Argus under Windows](#installation of argus under windows)) or can be run in any other computer.
 If the Argus server is running in other computer, you still need to have the ra program (from Argus client tools) running in the Windows computer with Stratosphere Windows IPS.
 
 
-## Runing it by giving the binetflows file as paramter:
+## Running it by giving the binetflows file as parameter:
 To give the binetflow file as a parameter, just put the name of the file after the StratosphereWatcher program
 
         python your_path\StratosphereWatcher.py test7.binetflow
@@ -17,54 +17,53 @@ To give the binetflow file as a parameter, just put the name of the file after t
 The test7.binetflow file is provided as an example. The StratosphereWatcher.py program will first download some necessary files from the Internet and then it will run the detection on the binetflow file. 
     See the following sections to know exactly what StratosphereWatcher.py is doing.
 
-## Running it by reading the flows from StdIn
-This method can be used to read a file or to read the flows from an ra program (Argus client suite).
+## Running it by reading the flows from Stdin
+This method can be used to read the flows using Stdin from a file or to read the flows from a ra program (Argus client suite).
 
 ### From a file
+To read the flows from a file do
 
     cat test7.binetflow | python StratosphereFlow.py
 
-This possibility is better for fast case, because there is not checking updates.
-Caution: For first running this program, you use first case for running. The reason is config file, which is created in StratosphereWatcher.
+Note that we are using now StratosphereFlow.py directly. This is because the StratosphereWatcher takes care of the download of models and that the service is running continually. In this case, StratosphereFlow.py read the flows directly without any update.
+To be able to use this way of reading a file from Stdin, Stratosphere still needs to create its configuration file, that is way at first is better to run it at least once with the file as a parameter.
 
 # Configuration
-This program 
-You can also manage the configuration file, where are some features for this program.
+Stratosphere Windows IPS uses a configuration file to tune its behavior. This file is automatically created when you run StratosphereWatcher.py. After the configuration file is created, you can manually edit it and the program will notice and honor the changes. 
 
-# Files in project
+
+# What each files does in Stratosphere Windows IPS
 ## StratosphereWatcher.py 
 
-- downloading updates and files
-- creating process
-- in future it shoud start windows service.
+- Downloads updates, models files and modules files.
+- Creating the main detection process
+- In the future it should start windows service.
 
 ## StratosphereFlow.py
 
-- it takes flows from stdin
-- it decides when tim_window starts and ends
-- it stores flows in queue
-- it stores tuple object a ip 
+- It can read flows from Stdin.
+- It decides when the  time window of the detection starts and ends.
+- It stores the flows in a queue.
+- It manages the tuple objects.
 
 ## StratosphereTuple.py
 
-- it creates tuple_objects
-- one tuple object has a list of flows
-- it computes state for current tuple
+- It creates the tuple objects.
+- It computes the state of the current tuple.
 
 ## StratosphereDetector.py
-- it calles modules for detecting.
+- It calls the modules for detecting.
+- The modules are downloaded from the Internet and may be updated.
 
 ## StratosphereConfig.py
-- it creates config file with implicit settings, if there is no config file.
+- It creates the config file with implicit settings if there is no config file.
 
 ## StratosphereOutput.py
 - For printing a logging.
 
 # Installation of Argus under Windows
+Coming soon.
 
-# TODO:
-- create install app.
-- runable argus.
-- windows service
-
-
+# TODO
+- Create install app.
+- Windows service

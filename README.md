@@ -29,6 +29,19 @@ To read the flows from a file do
 Note that we are using now StratosphereFlow.py directly. This is because the StratosphereWatcher takes care of the download of models and that the service is running continually. In this case, StratosphereFlow.py read the flows directly without any update.
 To be able to use this way of reading a file from Stdin, Stratosphere still needs to create its configuration file, that is way at first is better to run it at least once with the file as a parameter.
 
+## From an Argus installation
+If you have Argus running in Windows you can start the Argus server in your network like this
+
+    argus -i <name of your windows network device>
+
+And then you can run Startosphere like this
+
+    ra -n -Z b -S localhost | python StratosphereFlow.py
+
+In case the Argus program is running in other computer, you can connect to it and analyze the flows in your Windows like this
+
+    ra -n -Z b -S remote-host:remote-port | python StratosphereFlow.py
+
 # Configuration
 Stratosphere Windows IPS uses a configuration file to tune its behavior. This file is automatically created when you run StratosphereWatcher.py. After the configuration file is created, you can manually edit it and the program will notice and honor the changes. 
 
